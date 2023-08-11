@@ -1,12 +1,11 @@
 import collections
-from collections.abc import Callable
-
 import numba as nb
 import numpy as np
 import pandas as pd
 import scipy.optimize
 import scipy.sparse
 import spectrum_utils.spectrum as sus
+from collections.abc import Callable
 
 from similarity_utils import spec_to_neutral_loss
 
@@ -296,7 +295,6 @@ def _cosine_fast(
                 )
                 index += 1
                 other_peak_i = other_peak_index[cpi] + index
-
 
     with nb.objmode(row_ind="int64[:]", col_ind="int64[:]"):
         row_ind, col_ind = scipy.optimize.linear_sum_assignment(

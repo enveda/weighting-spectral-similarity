@@ -4,7 +4,6 @@ import numpy as np
 
 def _string_to_hash(input_string):
     """Hash input string deterministically."""
-
     m = hashlib.sha256()
     m.update(bytes(input_string, "utf-8"))
     return m.hexdigest()
@@ -12,14 +11,12 @@ def _string_to_hash(input_string):
 
 def _spectrum_to_string(mzs, intensities):
     """Convert mzs and intensities string arrays to single string."""
-
     spectrum_string = "({0}),({1})".format(" ".join(mzs), " ".join(intensities))
     return spectrum_string
 
 
 def _array_to_rounded_string_list_iterative(arr, max_precision, min_precision):
     """Round all values in array iteratively from max_precision to min_precision."""
-
     rounded_array = [str(x) for x in arr]
     rounded_arrays = [rounded_array]
 
@@ -34,7 +31,6 @@ def _array_to_rounded_string_list_iterative(arr, max_precision, min_precision):
 
 def _array_to_rounded_string_list_direct(arr, precision=None):
     """Round all values in array directly to specified number of decimal places."""
-
     if precision is None:
         return [str(x) for x in arr]
     else:
@@ -70,7 +66,6 @@ def hash_spectrum(
     -------
     str, the hashed value as hexidecimal string
     """
-
     if sort:
         sorted_idx = np.argsort(mzs)
         mzs = mzs[sorted_idx]

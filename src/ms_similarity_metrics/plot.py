@@ -1,16 +1,13 @@
 import collections
 import math
-from typing import Optional
-
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import numpy as np
+import similarity
 import spectrum_utils.plot as sup
 import spectrum_utils.spectrum as sus
-
-import similarity
 import utils
-
+from typing import Optional
 
 FragmentAnnotation = collections.namedtuple("FragmentAnnotation", ["ion_type"])
 FragmentAnnotation.__str__ = lambda _: ""
@@ -145,7 +142,7 @@ def _annotate_matching_peaks(
         ion_type = (
             "b"
             if abs(spectrum1.mz[match1] - spectrum2.mz[match2])
-            < fragment_mz_tol
+               < fragment_mz_tol
             else "y"
         )
         spectrum1._annotation[match1] = FragmentAnnotation(ion_type=ion_type)

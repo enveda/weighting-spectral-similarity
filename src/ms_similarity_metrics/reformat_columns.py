@@ -1,6 +1,7 @@
-from tqdm import tqdm
-import re
 import numpy as np
+import re
+from tqdm import tqdm
+
 
 def reformat_columns(columns_to_reformat, query_type, query_df, metric_names=[]):
     """
@@ -28,7 +29,7 @@ def reformat_columns(columns_to_reformat, query_type, query_df, metric_names=[])
     if 'library_spectra_matches' in columns_to_reformat:
         columns_to_reformat.remove('library_spectra_matches')
         query_df['library_spectra_matches'] = reformat_library_matches(query_df, 'library_spectra_matches')
-    
+
     # Reformat other columns
     for column in columns_to_reformat:
         if column in metric_names:
@@ -37,7 +38,6 @@ def reformat_columns(columns_to_reformat, query_type, query_df, metric_names=[])
             query_df[column] = reformat_other_columns(query_df, column)
 
     return query_df
-
 
 
 def reformat_library_matches(query_df, column):
@@ -72,6 +72,7 @@ def reformat_library_matches(query_df, column):
 
     return new_column
 
+
 def reformat_other_columns(query_df, column_name):
     """
     Reformat exact_matches column of the query dataframe
@@ -86,22 +87,22 @@ def reformat_other_columns(query_df, column_name):
     new_column: pandas.DataFrame column
        reformatted exact_matches column
     """
-   
+
     # Reformat column
     column_vals = {}
     for query in tqdm(query_df.index.values):
         if 'exact_matches' in column_name:
-            column_vals[query] = np.array(query_df.loc[query, column_name].replace('[', '')\
-                                        .replace(']','').replace('\'', '')\
-                                            .replace(',','').split()).astype(int)
+            column_vals[query] = np.array(query_df.loc[query, column_name].replace('[', '') \
+                                          .replace(']', '').replace('\'', '') \
+                                          .replace(',', '').split()).astype(int)
         elif 'tanimoto' in column_name:
-            column_vals[query] = np.array(query_df.loc[query, column_name].replace('[', '')\
-                                        .replace(']','').replace('\'', '')\
-                                            .replace(',','').split()).astype(float)
+            column_vals[query] = np.array(query_df.loc[query, column_name].replace('[', '') \
+                                          .replace(']', '').replace('\'', '') \
+                                          .replace(',', '').split()).astype(float)
         else:
-            column_vals[query] = np.array(query_df.loc[query, column_name].replace('[', '')\
-                                        .replace(']','').replace('\'', '')\
-                                            .replace(',','').split())
+            column_vals[query] = np.array(query_df.loc[query, column_name].replace('[', '') \
+                                          .replace(']', '').replace('\'', '') \
+                                          .replace(',', '').split())
     new_column = query_df.index.map(column_vals)
 
     return new_column

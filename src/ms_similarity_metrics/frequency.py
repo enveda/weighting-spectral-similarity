@@ -1,7 +1,8 @@
 import numpy as np
-from tqdm import tqdm 
-from collections import Counter
 import pandas as pd
+from collections import Counter
+from tqdm import tqdm
+
 
 def get_frequency_df(spectra, pairs):
     """
@@ -44,23 +45,24 @@ def get_frequency_df(spectra, pairs):
 
     return frequency_df, num_spectra, frequency_count
 
+
 # def tf(mz_values):
 #     """
 #     Compute the term frequency of the given m/z values.
-    
+
 #     Parameters:
 #     -----------
 #     mz_values : np.ndarray
 #         The m/z values.
-    
+
 #     Returns:
 #     --------
 #     term_frequency : dict
 #         The term frequency.
 #     """
-    
+
 #     term_frequency = {mz:1/len(mz_values) for mz in mz_values}
-    
+
 #     return term_frequency
 
 def idf(frequency_df, num_spectra, frequency_col='frequency'):
@@ -82,11 +84,13 @@ def idf(frequency_df, num_spectra, frequency_col='frequency'):
 
     # Get idf
     frequency_df = frequency_df.set_index('mz')
-    inverse_document_frequency = {mz:np.log(num_spectra/frequency_df.loc[mz,frequency_col]) for mz in frequency_df.index}
-    
+    inverse_document_frequency = {mz: np.log(num_spectra / frequency_df.loc[mz, frequency_col]) for mz in
+                                  frequency_df.index}
+
     return inverse_document_frequency
 
-def get_weights(frequency_df, weight_func,weight_col='prob', idf=False):
+
+def get_weights(frequency_df, weight_func, weight_col='prob', idf=False):
     """
     Compute the weights of the given frequency dataframe.
     
@@ -102,13 +106,12 @@ def get_weights(frequency_df, weight_func,weight_col='prob', idf=False):
     weights : dataframe
         The weights.
     """
-    
+
     # Get weights
     weights = frequency_df.copy()
     if idf:
         weights['weight'] = weights['mz'].map(weight_func)
     else:
         weights['weight'] = weights[weight_col].map(weight_func)
-    
-    return weights
 
+    return weights

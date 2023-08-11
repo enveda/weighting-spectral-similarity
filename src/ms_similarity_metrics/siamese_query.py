@@ -1,8 +1,7 @@
+import logging
+import numpy as np
 import pandas as pd
 import sys
-import numpy as np
-import logging
-
 from sklearn.metrics.pairwise import cosine_similarity
 
 sys.path.append('./')
@@ -10,17 +9,18 @@ from .hash_utils import hash_spectrum
 
 logger = logging.getLogger(__name__)
 
+
 def query(
-          query_spectra, 
-          library_spectra, 
-          library_hash, 
-          siamese_query_df,
-          siamese_library_df,
-          nist_inchi_dict,
-          threshold=0.7, 
-          top_n=None, 
-          ppm_window=5000
-    ):
+    query_spectra,
+    library_spectra,
+    library_hash,
+    siamese_query_df,
+    siamese_library_df,
+    nist_inchi_dict,
+    threshold=0.7,
+    top_n=None,
+    ppm_window=5000
+):
     """
     Query a library with a set of spectra.
 
@@ -60,7 +60,7 @@ def query(
     library_precursor = np.array([s.precursor_mz for s in library_spectra])
     ppm = abs(1e6 * ((library_precursor - query_spectra.precursor_mz) / query_spectra.precursor_mz))
     indexes_to_keep = np.nonzero(np.abs(ppm) <= ppm_window)[0]
-    
+
     # Get exact matches
     exact_matches = nist_inchi_dict[query_spectra.partial_inchikey]
     exact_matches = list(set(exact_matches).intersection(set(indexes_to_keep)))
@@ -82,17 +82,17 @@ def query(
     query_hash = hash_spectrum(query_spectra.mz, query_spectra.intensity, precision=2, iterative=True,
                                sort=True)
 
-    return query_siamese( query_identifier, library_identifiers, library_hash, query_hash,
+    return query_siamese(query_identifier, library_identifiers, library_hash, query_hash,
                          siamese_query_df, siamese_library_df, threshold=threshold, top_n=top_n), num_matches
-         
 
-def query_siamese(query_identifier, 
-                  library_identifiers, 
-                  library_hash, 
-                  query_hash, 
+
+def query_siamese(query_identifier,
+                  library_identifiers,
+                  library_hash,
+                  query_hash,
                   siamese_query_df,
                   siamese_library_df,
-                  threshold=0.5, 
+                  threshold=0.5,
                   top_n=None):
     """
     Get query results using siamese network
@@ -124,23 +124,19 @@ def query_siamese(query_identifier,
     scores = cosine_similarity(query_vector.reshape(1, -1), library_vectors)[0]
 
     # Get matches above threshold
-    best_matches = [(spectra, score) for spectra, score in zip(library_identifiers, scores) 
-                                if score > threshold and query_hash != library_hash[spectra]]
+    best_matches = [(spectra, score) for spectra, score in zip(library_identifiers, scores)
+                    if score > threshold and query_hash != library_hash[spectra]]
     best_matches.sort(key=lambda x: x[1], reverse=True)
 
     # Return top_n matches
     if top_n is not None:
-            if len(best_matches) > top_n:
-                best_matches = best_matches[:top_n]
-            else:
-                    logger.warning(
-                        f"Less matches  ({len(best_matches)}) were found for modified cosine than the given topN, returning all matches.")
+        if len(best_matches) > top_n:
+            best_matches = best_matches[:top_n]
+        else:
+            logger.warning(
+                f"Less matches  ({len(best_matches)}) were found for modified cosine than the given topN, returning all matches.")
 
-    
     # Get identical spectra using hash
     identical_spectra = [spectra for spectra in library_identifiers if query_hash == library_hash[spectra]]
 
     return best_matches, identical_spectra
-
-
-
