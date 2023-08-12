@@ -20,7 +20,8 @@ Links to the specific files are given in the notebooks.
 
 ## Reproducibility
 To reproduce the results, run the notebooks in the given order.
-The Python virtual environment can be installed using [Poetry](https://python-poetry.org/).
+The Python virtual environment can be installed using [Poetry](https://python-poetry.org/). 
+Install the spectral_entropy package from https://github.com/YuanyueLi/SpectralEntropy
 
 ## Code
 The project has the following structure:
