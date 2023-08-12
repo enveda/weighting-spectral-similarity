@@ -1,3 +1,5 @@
+# Modified from https://github.com/bittremieux/cosine_neutral_loss/
+
 import collections
 import numba as nb
 import numpy as np
@@ -7,7 +9,7 @@ import scipy.sparse
 import spectrum_utils.spectrum as sus
 from collections.abc import Callable
 
-from similarity_utils import spec_to_neutral_loss
+from .similarity_utils import spec_to_neutral_loss
 
 SpectrumTuple = collections.namedtuple(
     "SpectrumTuple", ["precursor_mz", "precursor_charge", "mz", "intensity"]

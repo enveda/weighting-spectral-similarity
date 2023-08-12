@@ -4,6 +4,9 @@ import spectrum_utils.spectrum as sus
 from rdkit import Chem
 from tqdm import tqdm
 
+from rdkit import RDLogger
+RDLogger.DisableLog('rdApp.info')   
+
 
 def is_centroid(intensity_array):
     return np.all(intensity_array > 0)

@@ -1,3 +1,5 @@
+# Modified from # Modified from https://github.com/bittremieux/cosine_neutral_loss/
+
 import numpy as np
 import spectrum_utils.spectrum as sus
 
