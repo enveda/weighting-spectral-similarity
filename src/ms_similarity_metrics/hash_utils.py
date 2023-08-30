@@ -1,4 +1,5 @@
 import hashlib
+
 import numpy as np
 
 
@@ -38,12 +39,12 @@ def _array_to_rounded_string_list_direct(arr, precision=None):
 
 
 def hash_spectrum(
-    mzs,
-    intensities,
-    precision=None,
-    iterative=False,
-    sort=False,
-    normalize_intensity=False,
+        mzs,
+        intensities,
+        precision=None,
+        iterative=False,
+        sort=False,
+        normalize_intensity=False,
 ):
     """
     Hash the input mzs and intensities by first (optionally) truncating

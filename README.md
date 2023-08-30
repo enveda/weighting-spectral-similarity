@@ -9,8 +9,6 @@
 
 ## General Info
 This repository contains code for evaluating weighting methods for spectral similarity metrics. 
-Data for this repo is contained in this bucket: s3://enveda-data-user/chloe.engler/cosine_similarity/
-A paper draft summarizing the project and the methods used are given in this document: https://docs.google.com/document/d/1TaN0qbZdBFC9q8r7_95FDVNtMHk-a6P93Ba_WTQ2tp0/edit
 
 ## Datasets
 - [GNPS library](https://gnps.ucsd.edu/)

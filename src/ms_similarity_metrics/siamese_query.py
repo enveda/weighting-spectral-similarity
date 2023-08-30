@@ -1,7 +1,8 @@
 import logging
+import sys
+
 import numpy as np
 import pandas as pd
-import sys
 from sklearn.metrics.pairwise import cosine_similarity
 
 sys.path.append('./')
@@ -11,15 +12,15 @@ logger = logging.getLogger(__name__)
 
 
 def query(
-    query_spectra,
-    library_spectra,
-    library_hash,
-    siamese_query_df,
-    siamese_library_df,
-    nist_inchi_dict,
-    threshold=0.7,
-    top_n=None,
-    ppm_window=5000
+        query_spectra,
+        library_spectra,
+        library_hash,
+        siamese_query_df,
+        siamese_library_df,
+        nist_inchi_dict,
+        threshold=0.7,
+        top_n=None,
+        ppm_window=5000
 ):
     """
     Query a library with a set of spectra.

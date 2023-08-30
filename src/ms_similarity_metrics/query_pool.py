@@ -1,12 +1,8 @@
-import importlib
 import logging
-import numpy as np
-import pandas as pd
 import sys
 from collections import defaultdict
-from functools import partial
-from multiprocessing import Pool, cpu_count
-from random import sample
+
+import numpy as np
 
 sys.path.append('./')
 from .hash_utils import hash_spectrum
@@ -17,15 +13,15 @@ logger = logging.getLogger(__name__)
 
 
 def query(
-    query_spectra,
-    library_spectra,
-    library_hash,
-    metric_type,
-    nist_inchi_dict,
-    threshold=0.7,
-    top_n=None,
-    fragment_mz_tolerance=0.1,
-    ppm_window=5
+        query_spectra,
+        library_spectra,
+        library_hash,
+        metric_type,
+        nist_inchi_dict,
+        threshold=0.7,
+        top_n=None,
+        fragment_mz_tolerance=0.1,
+        ppm_window=5
 ):
     """
     Query a library with a set of spectra.
@@ -88,12 +84,12 @@ def query(
 
 
 def call_spectraEntropy(
-    query_spectra,
-    metric_name,
-    fragment_mz_tolerance,
-    #   mz_weights=None,
-    #   intensity_weights=lambda x: x,
-    library_spectra=None):
+        query_spectra,
+        metric_name,
+        fragment_mz_tolerance,
+        #   mz_weights=None,
+        #   intensity_weights=lambda x: x,
+        library_spectra=None):
     """
     This function calls the spectral entropy package to calculate the similarity score between
     a query spectrum and a library spectrum.
@@ -149,16 +145,16 @@ def call_spectraEntropy(
 
 
 def query_spectralEntropy(
-    query_spectra,
-    library_spectra,
-    library_hash,
-    metric_name,
-    threshold=0.7,
-    top_n=None,
-    fragment_mz_tolerance=0.1,
-    mz_weights=None,
-    intensity_weights=lambda x: x,
-    n_workers=None,
+        query_spectra,
+        library_spectra,
+        library_hash,
+        metric_name,
+        threshold=0.7,
+        top_n=None,
+        fragment_mz_tolerance=0.1,
+        mz_weights=None,
+        intensity_weights=lambda x: x,
+        n_workers=None,
 ):
     """
     Query a library with a set of spectra.
@@ -230,9 +226,9 @@ def query_spectralEntropy(
 
 
 def call_modified_cosine(
-    query_spectra,
-    fragment_mz_tolerance,
-    library_spectra
+        query_spectra,
+        fragment_mz_tolerance,
+        library_spectra
 ):
     """
     This function calls the modified_cosine package to calculate the similarity score between
@@ -264,15 +260,15 @@ def call_modified_cosine(
 
 
 def query_modified_cosine(
-    query_spectra,
-    library_spectra,
-    library_hash,
-    threshold=0.7,
-    top_n=None,
-    fragment_mz_tolerance=0.1,
-    mz_weights=None,
-    intensity_weights=lambda x: x,
-    n_workers=None,
+        query_spectra,
+        library_spectra,
+        library_hash,
+        threshold=0.7,
+        top_n=None,
+        fragment_mz_tolerance=0.1,
+        mz_weights=None,
+        intensity_weights=lambda x: x,
+        n_workers=None,
 ):
     """
     Query a library with a set of spectra.

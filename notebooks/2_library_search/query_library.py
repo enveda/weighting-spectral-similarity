@@ -8,20 +8,16 @@ from rdkit import RDLogger
 import importlib
 
 import sys
+
 sys.path.append('../src/')
 
-
-from ms_similarity_metrics.hash_utils import hash_spectrum
-from ms_similarity_metrics.create_spectrum import create_spectra_NIST23, create_spectra_wout
-from ms_similarity_metrics.query_pool import query, call_modified_cosine
-from ms_similarity_metrics.frequency import get_weights
 importlib.reload(sys.modules['ms_similarity_metrics.hash_utils'])
 importlib.reload(sys.modules['ms_similarity_metrics.create_spectrum'])
 importlib.reload(sys.modules['ms_similarity_metrics.query_pool'])
 importlib.reload(sys.modules['ms_similarity_metrics.frequency'])
 from ms_similarity_metrics.hash_utils import hash_spectrum
 from ms_similarity_metrics.create_spectrum import create_spectra_NIST23, create_spectra_wout
-from ms_similarity_metrics.query_pool import query, call_modified_cosine
+from ms_similarity_metrics.query_pool import query
 from ms_similarity_metrics.frequency import get_weights
 from ms_similarity_metrics.create_spectrum import weight_NIST23_spectra, weight_wout_spectra
 
@@ -56,7 +52,7 @@ def get_frequency_df(frequency_df_path):
         if mz not in frequency_df.index.values:
             lower_bound = frequency_df[frequency_df.index < mz].index.max()
             upper_bound = frequency_df[frequency_df.index > mz].index.min()
-            prob_value = (frequency_df.loc[lower_bound, 'prob'] + frequency_df.loc[upper_bound, 'prob'])/2
+            prob_value = (frequency_df.loc[lower_bound, 'prob'] + frequency_df.loc[upper_bound, 'prob']) / 2
             new_frequency_df.loc[mz] = [0, prob_value]
     for mz in tqdm(np.arange(0, min_frequency, 0.1)):
         mz = np.round(mz, 1)
@@ -71,6 +67,7 @@ def get_frequency_df(frequency_df_path):
     new_frequency_df = new_frequency_df.set_index('mz', drop=True)
 
     return new_frequency_df
+
 
 def get_NIST23_spectra(normalize=True):
     """
@@ -90,7 +87,7 @@ def get_NIST23_spectra(normalize=True):
 
     # Read spectra from file 
     # (get this data from s3://enveda-data-user/chloe.engler/cosine_similarity/NIST_data/NIST23-HR-MSMS.MSP)
-    for i,spectrum in tqdm(enumerate(read_one_spectrum('../data/NIST23-HR-MSMS.MSP'))):
+    for i, spectrum in tqdm(enumerate(read_one_spectrum('../data/NIST23-HR-MSMS.MSP'))):
         spectra_list.append(spectrum)
 
     #  make a dict from inchikey to smiles
@@ -104,12 +101,13 @@ def get_NIST23_spectra(normalize=True):
 
     # Convert spectra to right format and filter
     # See create_spectrum.py for more filtering information
-    nist_spectra, info_dict, nist_inchi_dict = create_spectra_NIST23(spectra_list, 
-                                                                     inchikey_to_smiles, 
-                                                                     min_n_peaks=6, 
+    nist_spectra, info_dict, nist_inchi_dict = create_spectra_NIST23(spectra_list,
+                                                                     inchikey_to_smiles,
+                                                                     min_n_peaks=6,
                                                                      normalize=normalize)
 
     return nist_spectra, info_dict, nist_inchi_dict
+
 
 def get_matching_inchis(nist_spectra, wout_spectra):
     """
@@ -122,7 +120,7 @@ def get_matching_inchis(nist_spectra, wout_spectra):
     Returns:
         matching_inchis: list of inchikeys
     """
-    
+
     # Get set with all inchis from nist spectra
     nist_inchis = {
         spectra.partial_inchikey
@@ -131,23 +129,24 @@ def get_matching_inchis(nist_spectra, wout_spectra):
 
     # Check for matching spectra in NIST23 and wout
     matching_inchis = []
-    for i,spectra in enumerate(tqdm(wout_spectra)):
+    for i, spectra in enumerate(tqdm(wout_spectra)):
         current_inchi = spectra.partial_inchikey
         if current_inchi != None and current_inchi in nist_inchis:
             matching_inchis.append(current_inchi)
 
     return matching_inchis
 
+
 def query_all_spectra(save_dir,
                       mz_weight_func=None,
-                      intensity_weight_func=None, 
-                      weights=False, 
-                      ppm_window=5, 
-                      threshold=0.5, 
+                      intensity_weight_func=None,
+                      weights=False,
+                      ppm_window=5,
+                      threshold=0.5,
                       metric_type='modified_cosine',
-                      Stein_weights=False, 
+                      Stein_weights=False,
                       normalize=True
-    ):
+                      ):
     """
     This function queries all spectra in the wout library with inchikey 
     overlap against the NIST23 library.
@@ -177,11 +176,11 @@ def query_all_spectra(save_dir,
     # Check if Stein weights and normalize are both True
     if Stein_weights and normalize:
         raise ValueError('Stein weights doesn\'t use normalized intensities')
-    
+
     # Check for mz weights
     if weights and mz_weight_func == None:
         raise ValueError('You need to specify a mz_weight_func')
-    
+
     # Check for intensity weights
     if weights and intensity_weight_func == None:
         raise ValueError('You need to specify a intensity_weight_func')
@@ -202,7 +201,7 @@ def query_all_spectra(save_dir,
         'https://zenodo.org/record/6829249/files/gnps_libraries_metadata.csv?download=1'
     )
     metadata.set_index('id', inplace=True)
-        
+
     # dict of all hashes for all spectra in NIST23
     all_hashes = {
         s.identifier: hash_spectrum(s.mz, s.intensity, precision=2, iterative=True, sort=True)
@@ -211,10 +210,11 @@ def query_all_spectra(save_dir,
 
     # Get weights if needed
     if weights:
-        frequency_df = get_frequency_df('s3://enveda-data-user/chloe.engler/cosine_similarity/Wout_data/frequency_df.csv')
+        frequency_df = get_frequency_df(
+            's3://enveda-data-user/chloe.engler/cosine_similarity/Wout_data/frequency_df.csv')
         weight_df = get_weights(frequency_df, mz_weight_func, weight_col='prob')
-        
-        #Weight intensities (using m/z frequency values)
+
+        # Weight intensities (using m/z frequency values)
         if not Stein_weights:
             # Weight intensities
             weighted_nist_spectra = weight_NIST23_spectra(nist_spectra, intensity_weight_func, weight_df)
@@ -234,30 +234,32 @@ def query_all_spectra(save_dir,
 
     # Filter query spectra to only those with matching inchikey
     matching_inchis = get_matching_inchis(nist_spectra, wout_spectra)
-    filtered_query_spectra = [i for i in range(len(weighted_wout_spectra)) if weighted_wout_spectra[i].partial_inchikey in matching_inchis]
+    filtered_query_spectra = [i for i in range(len(weighted_wout_spectra)) if
+                              weighted_wout_spectra[i].partial_inchikey in matching_inchis]
 
     # Filter query spectra to only those that are not in the NIST library
-    filtered_query_spectra = [i for i in filtered_query_spectra if 
-                              metadata.loc[weighted_wout_spectra[i].identifier,'library'] != 'GNPS-NIST14-MATCHES']
-    
+    filtered_query_spectra = [i for i in filtered_query_spectra if
+                              metadata.loc[weighted_wout_spectra[i].identifier, 'library'] != 'GNPS-NIST14-MATCHES']
+
     # Filter query spectra to only those that have a ppm value between -100 and 100
-    wout_ppm_corrected = pd.read_csv('s3://enveda-data-user/chloe.engler/cosine_similarity/Wout_data/wout_ppm_corrected.csv', index_col=0).set_index('spectrumid')
-    filtered_query_spectra = [i for i in filtered_query_spectra if weighted_wout_spectra[i].identifier 
+    wout_ppm_corrected = pd.read_csv(
+        's3://enveda-data-user/chloe.engler/cosine_similarity/Wout_data/wout_ppm_corrected.csv', index_col=0).set_index(
+        'spectrumid')
+    filtered_query_spectra = [i for i in filtered_query_spectra if weighted_wout_spectra[i].identifier
                               in wout_ppm_corrected.index.values]
-    filtered_query_spectra = [i for i in filtered_query_spectra if 
+    filtered_query_spectra = [i for i in filtered_query_spectra if
                               abs(wout_ppm_corrected.loc[weighted_wout_spectra[i].identifier, 'ppm']) < 100]
 
-
     # Create dataframe to store results
-    query_df = pd.DataFrame(columns=['wout_identifier', 'library_spectra_matches', 
+    query_df = pd.DataFrame(columns=['wout_identifier', 'library_spectra_matches',
                                      'identical_pairs', 'num_inchi_matches', 'num_matches_in_query'])
-    
+
     # Query NIST23
     for i in tqdm(filtered_query_spectra):
         query_spectra = weighted_wout_spectra[i]
         (best_matches, identical_matches), num_matches, num_matches_in_query = query(
-            query_spectra, 
-            weighted_nist_spectra, 
+            query_spectra,
+            weighted_nist_spectra,
             all_hashes,
             nist_inchi_dict=nist_inchi_dict,
             metric_type=metric_type,
@@ -268,25 +270,24 @@ def query_all_spectra(save_dir,
 
         # Add results to dataframe
         query_df.loc[i] = {'wout_identifier': query_spectra.identifier,
-                            'library_spectra_matches':best_matches, 
-                            'identical_pairs':identical_matches,
-                            'num_inchi_matches':num_matches,
-                            'num_matches_in_query':num_matches_in_query}
-        
+                           'library_spectra_matches': best_matches,
+                           'identical_pairs': identical_matches,
+                           'num_inchi_matches': num_matches,
+                           'num_matches_in_query': num_matches_in_query}
+
         # Save results
-        if i%100 == 99:
+        if i % 100 == 99:
             query_df.to_csv(save_dir)
 
-    
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     # Set parameters
     save_dir = '../../data/mod_cosine_queries/filtered_5000_ppm.csv'
-    weights=False
-    ppm_window=5000
-    threshold=0.5
-    metric_type='modified_cosine'
-    normalize=True
+    weights = False
+    ppm_window = 5000
+    threshold = 0.5
+    metric_type = 'modified_cosine'
+    normalize = True
     mz_weight_func = None
     intensity_weight_func = None
 
@@ -312,12 +313,13 @@ if __name__ == "__main__":
     # normalize=True
 
     # Run query
-    query_all_spectra(save_dir=save_dir,
-                     mz_weight_func=mz_weight_func,
-                     intensity_weight_func=intensity_weight_func,
-                     weights=weights,
-                     ppm_window=ppm_window,
-                     threshold=threshold,
-                     metric_type=metric_type,
-                     normalize=normalize
-                     )
+    query_all_spectra(
+        save_dir=save_dir,
+        mz_weight_func=mz_weight_func,
+        intensity_weight_func=intensity_weight_func,
+        weights=weights,
+        ppm_window=ppm_window,
+        threshold=threshold,
+        metric_type=metric_type,
+        normalize=normalize
+    )

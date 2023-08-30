@@ -2,10 +2,10 @@ import numpy as np
 import pyteomics.mgf
 import spectrum_utils.spectrum as sus
 from rdkit import Chem
+from rdkit import RDLogger
 from tqdm import tqdm
 
-from rdkit import RDLogger
-RDLogger.DisableLog('rdApp.info')   
+RDLogger.DisableLog('rdApp.info')
 
 
 def is_centroid(intensity_array):
@@ -82,10 +82,10 @@ def create_spectra_NIST23(spectra_list, inchikey_dict, min_n_peaks=6, normalize=
     for i, spectrum_dict in tqdm(enumerate(spectra_list)):
 
         if (
-            float(spectrum_dict["precursormz"][0]) > 0 and
-            len(spectrum_dict["peaks"]) >= min_n_peaks and
-            spectrum_dict["ion_mode"] == "P" and
-            spectrum_dict['precursor_type'] == '[M+H]+'
+                float(spectrum_dict["precursormz"][0]) > 0 and
+                len(spectrum_dict["peaks"]) >= min_n_peaks and
+                spectrum_dict["ion_mode"] == "P" and
+                spectrum_dict['precursor_type'] == '[M+H]+'
         ):
 
             # They should all be positive.
@@ -251,17 +251,17 @@ def create_spectra_wout(filename="../data/ALL_GNPS_NO_PROPOGATED.mgf",
     with pyteomics.mgf.MGF(filename) as f_in:
         for spectrum_dict in tqdm(f_in):
             if (
-                int(spectrum_dict["params"]["libraryquality"]) <= 3 and
-                int(spectrum_dict["params"]["charge"][0]) in charges and
-                float(spectrum_dict["params"]["pepmass"][0]) > 0 and
-                len(spectrum_dict["m/z array"]) >= min_n_peaks and
-                spectrum_dict["params"]["ionmode"] == "Positive" and
-                spectrum_dict["params"]["name"].rstrip().endswith(" M+H") and
-                is_centroid(spectrum_dict["intensity array"]) and
-                (
-                    spectrum_dict["params"]["inchi"] != "N/A" or
-                    spectrum_dict["params"]["smiles"] != "N/A"
-                )
+                    int(spectrum_dict["params"]["libraryquality"]) <= 3 and
+                    int(spectrum_dict["params"]["charge"][0]) in charges and
+                    float(spectrum_dict["params"]["pepmass"][0]) > 0 and
+                    len(spectrum_dict["m/z array"]) >= min_n_peaks and
+                    spectrum_dict["params"]["ionmode"] == "Positive" and
+                    spectrum_dict["params"]["name"].rstrip().endswith(" M+H") and
+                    is_centroid(spectrum_dict["intensity array"]) and
+                    (
+                            spectrum_dict["params"]["inchi"] != "N/A" or
+                            spectrum_dict["params"]["smiles"] != "N/A"
+                    )
             ):
 
                 # Normalize intensity array

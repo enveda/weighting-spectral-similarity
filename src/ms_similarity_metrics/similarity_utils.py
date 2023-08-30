@@ -27,7 +27,7 @@ def spec_to_neutral_loss(spectrum: sus.MsmsSpectrum) -> sus.MsmsSpectrum:
     # TODO: This assumes [M+H]x charged ions.
     adduct_mass = 1.007825
     neutral_mass = (
-                       spectrum.precursor_mz - adduct_mass
+                           spectrum.precursor_mz - adduct_mass
                    ) * spectrum.precursor_charge
     mz, intensity = ((neutral_mass + adduct_mass) - mz)[::-1], intensity[::-1]
     return sus.MsmsSpectrum(

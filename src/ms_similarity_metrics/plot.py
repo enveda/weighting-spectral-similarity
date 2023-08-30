@@ -1,5 +1,7 @@
 import collections
 import math
+from typing import Optional
+
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import numpy as np
@@ -7,18 +9,17 @@ import similarity
 import spectrum_utils.plot as sup
 import spectrum_utils.spectrum as sus
 import utils
-from typing import Optional
 
 FragmentAnnotation = collections.namedtuple("FragmentAnnotation", ["ion_type"])
 FragmentAnnotation.__str__ = lambda _: ""
 
 
 def plot_mirror(
-    spectrum1: sus.MsmsSpectrum,
-    spectrum2: sus.MsmsSpectrum,
-    score: Optional[str],
-    filename: str,
-    fragment_mz_tol: float = 0.1,
+        spectrum1: sus.MsmsSpectrum,
+        spectrum2: sus.MsmsSpectrum,
+        score: Optional[str],
+        filename: str,
+        fragment_mz_tol: float = 0.1,
 ) -> None:
     """
     Plot mirror spectra showing peak matches.
@@ -67,8 +68,8 @@ def plot_mirror(
     # Draw lines between matching peaks.
     if sim is not None:
         for mz1, mz2 in zip(
-            spectrum1.mz[sim.matched_indices],
-            spectrum2.mz[sim.matched_indices_other],
+                spectrum1.mz[sim.matched_indices],
+                spectrum2.mz[sim.matched_indices_other],
         ):
             ion_type = "b" if abs(mz1 - mz2) < fragment_mz_tol else "y"
             axes[0].plot(
@@ -112,11 +113,11 @@ def plot_mirror(
 
 
 def _annotate_matching_peaks(
-    spectrum1: sus.MsmsSpectrum,
-    spectrum2: sus.MsmsSpectrum,
-    peak_matches1: np.ndarray,
-    peak_matches2: np.ndarray,
-    fragment_mz_tol: float,
+        spectrum1: sus.MsmsSpectrum,
+        spectrum2: sus.MsmsSpectrum,
+        peak_matches1: np.ndarray,
+        peak_matches2: np.ndarray,
+        fragment_mz_tol: float,
 ) -> None:
     """
     Somewhat hacky way to get spectrum_utils to annotate matching peaks.
