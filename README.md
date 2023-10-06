@@ -14,7 +14,7 @@ This repository contains code for evaluating weighting methods for spectral simi
 - [GNPS library](https://gnps.ucsd.edu/)
 - [NIST library](https://chemdata.nist.gov/)
 
-Links to the specific files are given in the notebooks.
+Links to the specific files are given in the notebooks and data input should be located at ./data
 
 ## Reproducibility
 To reproduce the results, run the notebooks in the given order.
