@@ -60,9 +60,6 @@ The project has the following structure:
         ├── plot.py
         ├── query_pool.py
         ├── reformat_columns.py
-        ├── siamese_query.py
-        ├── similarity_utils.py
-        ├── similarity_weighted.py
         └── version.py
 
 ```

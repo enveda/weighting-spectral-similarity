@@ -2309,12 +2309,6 @@ requests = "^2.17.0"
 scikit-learn = "*"
 tqdm = "*"
 
-[package.source]
-type = "git"
-url = "https://github.com/enveda/metabolomics"
-reference = "HEAD"
-resolved_reference = "ecc6e258e8d940180f9e82a4a647bf51e73b2c35"
-
 [[package]]
 name = "mistune"
 version = "3.0.1"
