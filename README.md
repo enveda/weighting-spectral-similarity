@@ -1,4 +1,4 @@
-# On optimizing mass spectral library search and spectral alignment by weighting low-intensity peaks and m/z frequency
+# Weighting low-intensity MS/MS ions and m/z frequency for spectral library annotation
 
 ## Table of Contents
 
