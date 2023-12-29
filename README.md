@@ -2,12 +2,20 @@
 
 ## Table of Contents
 
-- General info
-- Datasets
+- [Citation](#citation)
+- [General](#general)
+- [Datasets](#datasets)
 - Reproducibility
-- Code structure
+- [Code structure](#code)
 
-## General Info
+### Citation
+If you have found our manuscript useful in your work, please consider citing:
+
+> Engler Hart, C., Kind, T., Dorrestein, P. D., Healey, D., and Domingo-Fernández, D. (2024).
+Weighting low-intensity MS/MS ions and m/z frequency for spectral library annotation. 
+*Journal of the American Society for Mass Spectrometry*.
+
+## General
 This repository contains code for evaluating weighting methods for spectral similarity metrics. 
 
 ## Datasets
